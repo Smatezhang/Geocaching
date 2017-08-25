@@ -61,17 +61,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private TextWatcher mTextWatcher = new TextWatcher() {
-
-
-
         @Override
         public void beforeTextChanged(CharSequence mCharSequence, int mI, int mI1, int mI2) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence mCharSequence, int mI, int mI1, int mI2) {
-
         }
 
         @Override
