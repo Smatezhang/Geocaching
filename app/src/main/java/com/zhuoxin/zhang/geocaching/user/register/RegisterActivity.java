@@ -1,6 +1,9 @@
 package com.zhuoxin.zhang.geocaching.user.register;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -14,12 +17,14 @@ import com.zhuoxin.zhang.geocaching.R;
 import com.zhuoxin.zhang.geocaching.commons.ActivityUtils;
 import com.zhuoxin.zhang.geocaching.commons.RegexUtils;
 import com.zhuoxin.zhang.geocaching.custom.AlertDialogFragment;
+import com.zhuoxin.zhang.geocaching.entity.User;
+import com.zhuoxin.zhang.geocaching.map.HomeActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity  implements RegisterView{
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -35,6 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected String confirm;
     protected String password;
     protected String mUsername;
+    protected ProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +106,38 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         // TODO: 2017/8/25
-        mActivityUtils.showToast("注册成功！");
+        //mActivityUtils.showToast("注册成功！");
+        new RegisterPresenter(this).register(new User(mUsername,password));
 
+    }
+
+    @Override
+    public void showMessage(String msg) {
+      mActivityUtils.showToast(msg);
+    }
+
+    @Override
+    public void showProgress() {
+        mProgressDialog = ProgressDialog.show(this, "注册", "玩命注册中。。。");
+
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressDialog.dismiss();
+    }
+
+    @Override
+    public void clearEditText() {
+        mEtUsername.setText("");
+        mEtPassword.setText("");
+        mEtConfirm.setText("");
+    }
+
+    @Override
+    public void navigateTOHome() {
+        mActivityUtils.startActivity(HomeActivity.class);
+        finish();
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("main_home"));
     }
 }

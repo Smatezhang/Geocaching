@@ -1,6 +1,9 @@
 package com.zhuoxin.zhang.geocaching.user.login;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -15,12 +18,15 @@ import com.zhuoxin.zhang.geocaching.R;
 import com.zhuoxin.zhang.geocaching.commons.ActivityUtils;
 import com.zhuoxin.zhang.geocaching.commons.RegexUtils;
 import com.zhuoxin.zhang.geocaching.custom.AlertDialogFragment;
+import com.zhuoxin.zhang.geocaching.entity.User;
+import com.zhuoxin.zhang.geocaching.map.HomeActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MultipartBody;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -35,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
     protected ActivityUtils mActivityUtils;
     protected String mpassword;
     protected String musername;
+    protected ProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +98,37 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         // TODO: 2017/8/25
-        mActivityUtils.showToast("登录成功！！");
+        //mActivityUtils.showToast("登录成功！！");
+        User mUser = new User(musername,mpassword);
+        new LoginPresenter(this).login(mUser);
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        mActivityUtils.showToast(msg);
+    }
+
+    @Override
+    public void showProgress() {
+        mProgressDialog = ProgressDialog.show(this, "登录", "登录中。。。。");
+
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressDialog.dismiss();
+    }
+
+    @Override
+    public void NavigateToHome() {
+        mActivityUtils.startActivity(HomeActivity.class);
+        finish();
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("main_home"));
+    }
+
+    @Override
+    public void clearEditText() {
+        mEtUsername.setText("");
+        mEtPassword.setText("");
     }
 }
