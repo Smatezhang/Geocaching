@@ -3,6 +3,17 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
+    signingConfigs {
+        // your debug keystore
+        debug{
+            storeFile file("debug.keystore")
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
     defaultConfig {
         applicationId "com.zhuoxin.zhang.geocaching"
         minSdkVersion 15

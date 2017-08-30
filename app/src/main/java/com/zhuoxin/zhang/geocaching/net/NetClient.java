@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.PUT;
 
 /**
  * Created by Administrator on 2017/8/29.
@@ -14,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetClient {
 
+    public static final String BASE_URL = "http://admin.syfeicuiedu.com";
     private static NetClient sNetClient;
     private Retrofit mRetrofit;
 
@@ -25,7 +27,7 @@ public class NetClient {
                 .build();
         Gson mGson = new GsonBuilder().setLenient().create();
         mRetrofit = new Retrofit.Builder()
-                .baseUrl("http://admin.syfeicuiedu.com")
+                .baseUrl(BASE_URL)
                 .client(mOkHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(mGson))
                 .build();

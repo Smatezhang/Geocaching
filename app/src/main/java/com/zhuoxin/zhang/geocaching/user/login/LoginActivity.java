@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.zhuoxin.zhang.geocaching.MainActivity;
 import com.zhuoxin.zhang.geocaching.R;
 import com.zhuoxin.zhang.geocaching.commons.ActivityUtils;
 import com.zhuoxin.zhang.geocaching.commons.RegexUtils;
@@ -123,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     public void NavigateToHome() {
         mActivityUtils.startActivity(HomeActivity.class);
         finish();
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("main_home"));
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(MainActivity.ACTION_MAIN));
     }
 
     @Override
