@@ -16,13 +16,16 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.zhuoxin.zhang.geocaching.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -65,6 +68,7 @@ public class MapFragment extends Fragment {
     FrameLayout mMapFrame;
     Unbinder unbinder;
     private View mView;
+    private BaiduMap mBaiduMap;
 
     @Nullable
     @Override
@@ -77,7 +81,9 @@ public class MapFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //初始化
         initMapView();
+        //
 
     }
 
@@ -96,13 +102,51 @@ public class MapFragment extends Fragment {
                 .zoomGesturesEnabled(true);//设置是否允许缩放手势
 
         MapView mMapView = new MapView(getContext(), mBaiduMapOptions);
+        mBaiduMap = mMapView.getMap();
         //将MapView加入到Fragment中
-        mMapFrame.addView(mMapView,0);
+        mMapFrame.addView(mMapView, 0);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick({R.id.iv_scaleUp, R.id.iv_scaleDown, R.id.tv_located, R.id.tv_satellite, R.id.tv_compass})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_scaleUp:
+                //放大
+                mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomIn());
+
+                break;
+            case R.id.iv_scaleDown:
+                //缩小
+                mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomOut());
+
+                break;
+            case R.id.tv_located:
+                //定位
+
+
+
+                break;
+            case R.id.tv_satellite:
+                //卫星
+                int mMapType = mBaiduMap.getMapType();
+                mMapType = mMapType==BaiduMap.MAP_TYPE_NORMAL?BaiduMap.MAP_TYPE_SATELLITE:BaiduMap.MAP_TYPE_NORMAL;
+                mBaiduMap.setMapType(mMapType);
+                mTvSatellite.setText(mMapType==BaiduMap.MAP_TYPE_NORMAL?"卫星":"普通");
+
+                break;
+            case R.id.tv_compass:
+                //指南针
+                boolean mCompassEnabled = mBaiduMap.getUiSettings().isCompassEnabled();
+                mBaiduMap.getUiSettings().setCompassEnabled(!mCompassEnabled);
+
+
+                break;
+        }
     }
 }
