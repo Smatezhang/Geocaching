@@ -3,6 +3,7 @@ package com.zhuoxin.zhang.geocaching.map;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,6 +35,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout mDrawerLayout;
     protected ActivityUtils mActivityUtils;
     protected ImageView mUserIcon;
+    private MapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mNavigation.setNavigationItemSelectedListener(this);
+
+        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
+
+
     }
 
     @Override
@@ -70,8 +76,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_hide:
-                // TODO: 2017/8/30
-                mActivityUtils.showToast("埋藏宝藏！！");
+               /* // TODO: 2017/8/30
+                mActivityUtils.showToast("埋藏宝藏！！");*/
+               mMapFragment.changeUIMode(MapFragment.TREASURE_MADE_BURY);
                 break;
             case R.id.menu_my_list:
                 // TODO: 2017/8/30

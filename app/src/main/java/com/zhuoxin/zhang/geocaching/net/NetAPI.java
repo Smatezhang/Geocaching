@@ -5,6 +5,8 @@ import com.zhuoxin.zhang.geocaching.entity.User;
 import com.zhuoxin.zhang.geocaching.entity.LoginResult;
 import com.zhuoxin.zhang.geocaching.treasure.Area;
 import com.zhuoxin.zhang.geocaching.treasure.Treasure;
+import com.zhuoxin.zhang.geocaching.treasure.detail.TreasureDetail;
+import com.zhuoxin.zhang.geocaching.treasure.detail.TreasureDetailResult;
 
 import java.util.List;
 
@@ -33,8 +35,19 @@ public interface NetAPI {
     @POST("/Handler/UserHandler.ashx?action=register")
     Call<RegisterResult> register(@Body User mUser);
 
+    /**
+     * 根据区域 获取宝藏
+     * @param area
+     * @return
+     */
     @POST("/Handler/TreasureHandler.ashx?action=show")
     Call<List<Treasure>> getTreasure(@Body Area area);
+    @POST("/Handler/TreasureHandler.ashx?action=tdetails")
+    Call<List<TreasureDetailResult>> getTreasureDetail(@Body TreasureDetail treasureDetail);
+
+
+
+
 
 
 }
