@@ -1,11 +1,14 @@
 package com.zhuoxin.zhang.geocaching.treasure.detail;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -19,16 +22,20 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
+import com.baidu.mapapi.utils.OpenClientUtil;
 import com.zhuoxin.zhang.geocaching.R;
 import com.zhuoxin.zhang.geocaching.commons.ActivityUtils;
 import com.zhuoxin.zhang.geocaching.custom.TreasureView;
+import com.zhuoxin.zhang.geocaching.map.MapFragment;
 import com.zhuoxin.zhang.geocaching.treasure.Treasure;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class TreasureDetailActivity extends AppCompatActivity implements TreasureDetailView {
     private static final String TREASURE = "treasure";
@@ -46,6 +53,7 @@ public class TreasureDetailActivity extends AppCompatActivity implements Treasur
     private BaiduMap mBaiduMap;
     private ActivityUtils mActivityUtils;
 
+
     public static void open(Context context, Treasure treasure) {
         Intent mIntent = new Intent(context,TreasureDetailActivity.class);
         mIntent.putExtra(TREASURE, treasure);
@@ -53,6 +61,7 @@ public class TreasureDetailActivity extends AppCompatActivity implements Treasur
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +83,7 @@ public class TreasureDetailActivity extends AppCompatActivity implements Treasur
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void init() {
 
-        LatLng mLatLng = new LatLng(mTreasure.getLatitude(), mTreasure.getLongitude());
+       LatLng mLatLng = new LatLng(mTreasure.getLatitude(), mTreasure.getLongitude());
         MapStatus mapStatus = new MapStatus.Builder()
                 .overlook(-20f)//地图俯仰角度。
                 .rotate(0f)//地图旋转角度。
@@ -104,9 +113,6 @@ public class TreasureDetailActivity extends AppCompatActivity implements Treasur
         mFrameLayout.addView(mMapView);
         //显示宝藏信息
         mTreasureView.bindView(mTreasure);
-
-
-
     }
 
     @Override
@@ -115,6 +121,73 @@ public class TreasureDetailActivity extends AppCompatActivity implements Treasur
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.iv_navigation)
+    public void navigation(){
+        final String mCurrentAddress = MapFragment.getCurrentAddress();
+        final LatLng mCurrentLocation = MapFragment.getmCurrentLocation();
+        final String mEndAddress = mTreasure.getLocation();
+        final LatLng mEndLocation = new LatLng(mTreasure.getLatitude(), mTreasure.getLongitude());
+        PopupMenu mPopupMenu = new PopupMenu(TreasureDetailActivity.this, mIvNavigation);
+        mPopupMenu.inflate(R.menu.menu_navigation);
+        mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.walking_navi:
+                        // TODO: 2017/9/4  walking Navigation
+                        openNavigation(mCurrentLocation,mCurrentAddress,mEndAddress,mEndLocation,1);
+                        break;
+                    case R.id.biking_navi:
+                        // TODO: 2017/9/4 biking navigation
+                        openNavigation(mCurrentLocation, mCurrentAddress, mEndAddress, mEndLocation, 2);
+                        break;
+                }
+                return false;
+            }
+        });
+        mPopupMenu.show();
+
+    }
+
+    private void openNavigation(LatLng currentLocation, String currentAddress, String endAddress, LatLng endLocation, int i) {
+        NaviParaOption mNaviParaOption = new NaviParaOption()
+                .startName(currentAddress)
+                .startPoint(currentLocation)
+                .endName(endAddress)
+                .endPoint(endLocation);
+        int type = i;
+        if (type == 1){
+            boolean mB = BaiduMapNavigation.openBaiduMapWalkNavi(mNaviParaOption, TreasureDetailActivity.this);
+            if (!mB){
+                BaiduMapNavigation.openWebBaiduMapNavi(mNaviParaOption,TreasureDetailActivity.this);
+            }
+        }else {
+            boolean mB = BaiduMapNavigation.openBaiduMapBikeNavi(mNaviParaOption, TreasureDetailActivity.this);
+            if (!mB){
+                 new AlertDialog.Builder(TreasureDetailActivity.this)
+                        .setTitle("骑行导航")
+                        .setMessage("检测到系统未下载百度地图app或者地图版本太低，建议下载安装最新版的百度地图")
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                OpenClientUtil.getLatestBaiduMapApp(TreasureDetailActivity.this);
+                            }
+                        }).create()
+                        .show();
+
+
+
+
+            }
+        }
 
 
     }
