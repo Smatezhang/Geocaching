@@ -56,7 +56,7 @@ import com.zhuoxin.zhang.geocaching.treasure.detail.TreasureDetailActivity;
 import com.zhuoxin.zhang.geocaching.treasure.hide.HideTreasureActivity;
 import com.zhuoxin.zhang.geocaching.user.login.LoginView;
 
-import java.time.temporal.ValueRange;
+
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
@@ -129,6 +129,7 @@ public class MapFragment extends Fragment implements MapFragmentView {
     private GeoCoder mGeoCoder;
     private LatLng mCurrentStatus;
     private String mGeoAddress;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -158,7 +159,7 @@ public class MapFragment extends Fragment implements MapFragmentView {
     private void initGeoCorder() {
 
         mGeoCoder = GeoCoder.newInstance();
-        Log.e("TAG","==========1");
+        Log.e("TAG", "==========1");
         mGeoCoder.setOnGetGeoCodeResultListener(mOnGetGeoCoderResultListener);
     }
 
@@ -172,13 +173,13 @@ public class MapFragment extends Fragment implements MapFragmentView {
 
         @Override
         public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-            if (reverseGeoCodeResult == null || reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR){
+            if (reverseGeoCodeResult == null || reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
                 mGeoAddress = "未知地址";
-                Log.e("TAG",reverseGeoCodeResult.getAddress());
+                Log.e("TAG", reverseGeoCodeResult.getAddress());
                 mTvCurrentLocation.setText(mGeoAddress);
                 return;
             }
-            Log.e("TAG",reverseGeoCodeResult.getAddress());
+            Log.e("TAG", reverseGeoCodeResult.getAddress());
             mGeoAddress = reverseGeoCodeResult.getAddress();
             mTvCurrentLocation.setText(mGeoAddress);
 
@@ -187,6 +188,7 @@ public class MapFragment extends Fragment implements MapFragmentView {
 
     /**
      * 更改模式
+     *
      * @param mode
      */
     public void changeUIMode(int mode) {
@@ -194,6 +196,8 @@ public class MapFragment extends Fragment implements MapFragmentView {
             return;
         }
         currentMode = mode;
+
+
         switch (mode) {
             case TREASURE_MADE_NORMAL:
                 if (mCurrentMaker != null) {
@@ -251,14 +255,14 @@ public class MapFragment extends Fragment implements MapFragmentView {
      * 埋藏宝藏
      */
     @OnClick(R.id.hide_treasure)
-    public void hideTreasure(){
+    public void hideTreasure() {
 
         String mTitle = mEtTreasureTitle.getText().toString().trim();
-        if (TextUtils.isEmpty(mTitle)){
+        if (TextUtils.isEmpty(mTitle)) {
             mActivityUtils.showToast("宝藏标题不能为空！");
             return;
         }
-        HideTreasureActivity.open(getContext(),mTitle,mCurrentStatus,mGeoAddress);
+        HideTreasureActivity.open(getContext(), mTitle, mCurrentStatus, mGeoAddress);
 
     }
 
@@ -321,11 +325,11 @@ public class MapFragment extends Fragment implements MapFragmentView {
                 //更新地图
                 updateView(mTarget);
             }
-            if (currentMode == TREASURE_MADE_BURY){
+            if (currentMode == TREASURE_MADE_BURY) {
                 //Log.e("TAG","==========2");
-                mGeoCoder.reverseGeoCode( new ReverseGeoCodeOption().location(mTarget));
+                mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(mTarget));
             }
-           // Log.e("TAG","==========3");
+            // Log.e("TAG","==========3");
             mCurrentStatus = mTarget;
         }
     };
@@ -564,11 +568,10 @@ public class MapFragment extends Fragment implements MapFragmentView {
     @Override
     public void showTreasure(List<Treasure> treasureList) {
         mBaiduMap.clear();
-        if (currentMode != TREASURE_MADE_BURY){
+        if (currentMode != TREASURE_MADE_BURY) {
             mLayoutBottom.setVisibility(View.GONE);
             changeUIMode(TREASURE_MADE_NORMAL);
         }
-
 
 
         Log.e("=========", treasureList.size() + "");
@@ -609,6 +612,7 @@ public class MapFragment extends Fragment implements MapFragmentView {
 
     }
 
+
     public static LatLng getmCurrentLocation() {
         return mCurrentLocation;
     }
@@ -616,4 +620,15 @@ public class MapFragment extends Fragment implements MapFragmentView {
     public static String getCurrentAddress() {
         return mAddrStr;
     }
+
+    public Boolean isBuryMode() {
+        if (currentMode == TREASURE_MADE_BURY) {
+            return true;
+        } else {
+
+            return false;
+        }
+    }
+
+
 }

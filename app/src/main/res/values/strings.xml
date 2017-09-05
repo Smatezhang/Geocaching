@@ -69,5 +69,6 @@
     <string name="find_treasure">找到宝藏</string>
     <string name="navigation">开始导航</string>
     <string name="account_msg">个人信息</string>
+    <string name="title_activity_base">BaseActivity</string>
 
 </resources>

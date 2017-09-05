@@ -89,7 +89,7 @@ public class TreasureView extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mUnbinder.unbind();
+        //mUnbinder.unbind();
     }
 
 
