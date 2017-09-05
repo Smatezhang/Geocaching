@@ -26,14 +26,14 @@ public class IconSelectPopupWindow extends PopupWindow {
         super(activity.getLayoutInflater().inflate(R.layout.window_select_icon, null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         mActivity = activity;
         ButterKnife.bind(this, getContentView());
-
+        setBackgroundDrawable(new BitmapDrawable());
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
 
     public void show() {
         showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
-        setBackgroundDrawable(new BitmapDrawable());
+
 
     }
 

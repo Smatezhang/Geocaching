@@ -9,12 +9,18 @@ import com.zhuoxin.zhang.geocaching.treasure.detail.TreasureDetail;
 import com.zhuoxin.zhang.geocaching.treasure.detail.TreasureDetailResult;
 import com.zhuoxin.zhang.geocaching.treasure.hide.HideTreasure;
 import com.zhuoxin.zhang.geocaching.treasure.hide.HideTreasureResult;
+import com.zhuoxin.zhang.geocaching.user.account.Update;
+import com.zhuoxin.zhang.geocaching.user.account.UpdateResult;
+import com.zhuoxin.zhang.geocaching.user.account.UploadResult;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 /**
  * Created by Administrator on 2017/8/29.
@@ -66,5 +72,21 @@ public interface NetAPI {
     @POST("/Handler/TreasureHandler.ashx?action=hide")
     Call<HideTreasureResult> hideTreasure(@Body HideTreasure hideTreasure);
 
+    /**
+     * 更新头像
+     * @param update
+     * @return
+     */
+    @POST("/Handler/UserHandler.ashx?action=update")
+    Call<UpdateResult> update(@Body Update update);
+
+    /**
+     * 上传头像
+     * @param part
+     * @return
+     */
+    @Multipart
+    @POST("/Handler/UserLoadPicHandler1.ashx")
+    Call<UploadResult> upLoad(@Part MultipartBody.Part part);
 
 }
